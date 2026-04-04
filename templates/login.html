@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | MovieMind</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+</head>
+<body class="auth-page dark-mode">
+
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div class="logo">🎬 <span>MovieMind</span></div>
+                    <button onclick="toggleTheme()" class="theme-btn" type="button" style="background: none; border: 1px solid var(--glass-border); color: var(--text); padding: 5px 10px; border-radius: 8px; cursor: pointer;">🌓</button>
+                </div>
+                <h1>Welcome Back</h1>
+                <p>Login to access your personalized recommendations.</p>
+            </div>
+
+            <form action="/login" method="POST" class="auth-form">
+                <div class="input-group">
+                    <label for="username">Username</label>
+                    <input type="text" name="username" id="username" placeholder="Enter your username" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" id="password" placeholder="••••••••" required>
+                </div>
+
+                <div style="text-align: center;"> 
+                    <button type="submit" class="btn-auth full-width">Sign In</button>
+                </div>
+            </form>
+
+            <div class="auth-footer">
+                <p>Don't have an account? <a href="{{ url_for('signup') }}" style="color: var(--primary); text-decoration: none; font-weight: 600;">Create one</a></p>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
+<script>
+    // Check for saved theme preference
+    if (localStorage.getItem('theme') === 'light') {
+        document.body.classList.add('light-mode');
+    }
+
+    function toggleTheme() {
+        document.body.classList.toggle('light-mode');
+        const isLight = document.body.classList.contains('light-mode');
+        localStorage.setItem('theme', isLight ? 'light' : 'dark');
+    }
+</script>

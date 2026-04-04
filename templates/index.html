@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MovieMind | AI Discovery</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <nav class="navbar glass">
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+            <div class="logo">🎬 <span>MovieMind</span></div>
+        </div>
+        
+        <div class="nav-right">
+            <button onclick="toggleTheme()" class="theme-btn">🌓</button>
+            <button onclick="surpriseMe()" class="btn-surprise desktop-only">🎲 Surprise Me</button>
+            <span class="user-pill desktop-only">{{ session['username'] }}</span>
+
+            <div class="nav-actions desktop-only">
+                <form action="/delete_account" method="POST" style="margin: 0;" onsubmit="return confirm('Delete account and history permanently?');">
+                    <button type="submit" class="nav-delete-btn">Delete Account</button>
+                </form>
+                <a href="/logout" class="logout-link">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-layout">
+        <aside class="sidebar glass" id="sidebar">
+            <div class="sidebar-content">
+                <div class="filter-box">
+                    <h3>Min Rating</h3>
+                    <input type="range" id="ratingSlider" min="1" max="10" step="0.1" value="7.5" oninput="rVal.innerText=this.value">
+                    <span id="rVal">7.5</span>
+                </div>
+                <div class="history-box">
+                    <h4>History <a href="/clear_history" class="clear-link">Clear</a></h4>
+                    {% for s in recent %}
+                    <button class="tag" onclick="window.location.href='/?auto_search={{s}}'">{{s}}</button>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="mobile-only sidebar-footer">
+                <hr style="border: 0; border-top: 1px solid var(--glass-border); margin: 20px 0;">
+                <button onclick="surpriseMe()" class="btn-surprise" style="width: 100%; margin: 0 0 10px 0;">🎲 Surprise Me</button>
+                <form action="/delete_account" method="POST" onsubmit="return confirm('Delete permanently?');">
+                    <button type="submit" class="nav-delete-btn" style="color: #ef4444;">Delete Account</button>
+                </form>
+                <a href="/logout" class="logout-link" style="display: block; margin-top: 10px;">Logout</a>
+            </div>
+        </aside>
+
+        <main class="content">
+            <div class="search-hero">
+                <h1>Find your next <span>favorite</span> movie</h1>
+                <div class="search-container">
+                    <form method="POST" action="/" id="searchForm" class="premium-search-bar">
+                        <input type="text" id="movie_input" name="movie_name" placeholder="Start typing..." autocomplete="off">
+                        <button type="submit" class="btn-primary">Discover</button>
+                    </form>
+                    <div id="autocomplete-results" class="autocomplete-box"></div>
+                </div>
+            </div>
+
+            <div class="movie-grid">
+                {% for movie, poster in results %}
+                <div class="movie-card">
+                    <img src="{{poster}}" alt="Poster">
+                    <div class="card-info"><h3>{{movie}}</h3></div>
+                </div>
+                {% endfor %}
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // --- Sidebar Toggle ---
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
+        // --- Theme Toggle ---
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+            const theme = document.body.classList.contains('light-mode') ? 'light' : 'dark';
+            localStorage.setItem('theme', theme);
+        }
+
+        // Apply theme on load
+        if (localStorage.getItem('theme') === 'light') document.body.classList.add('light-mode');
+
+        // --- Autocomplete & Search ---
+        const input = document.getElementById('movie_input');
+        const resultsBox = document.getElementById('autocomplete-results');
+
+        input.addEventListener('input', async () => {
+            if (input.value.length < 2) { resultsBox.innerHTML = ''; return; }
+            const res = await fetch(`/autocomplete?q=${input.value}`);
+            const data = await res.json();
+            resultsBox.innerHTML = data.map(t => `<div onclick="selectMovie('${t}')">${t}</div>`).join('');
+        });
+
+        function selectMovie(title) {
+            input.value = title;
+            resultsBox.innerHTML = '';
+            document.getElementById('searchForm').submit();
+        }
+
+        function surpriseMe() {
+            const r = document.getElementById('ratingSlider').value;
+            window.location.href = `/surprise?rating=${r}`;
+        }
+
+        // --- Toast Pop-up ---
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('existing') === 'true') {
+            const alertBox = document.createElement('div');
+            alertBox.className = 'toast-popup';
+            alertBox.innerHTML = `<span>👋</span> Welcome back! Logged into existing account.`;
+            document.body.appendChild(alertBox);
+            window.history.replaceState({}, document.title, "/");
+            setTimeout(() => {
+                alertBox.style.opacity = '0';
+                setTimeout(() => alertBox.remove(), 500);
+            }, 4000);
+        }
+    </script>
+</body>
+</html>
