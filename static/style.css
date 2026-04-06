@@ -185,7 +185,7 @@ nav {
 .profile-avatar-large {
     width: 90px;
     height: 90px;
-    background: linear-gradient(45deg, #6a11cb, #2575fc);
+    background: linear-gradient(45deg, #981972, #4a193b);
     border-radius: 50%;
     margin: 0 auto 15px;
     display: flex;
@@ -321,8 +321,8 @@ input::-webkit-calendar-picker-indicator {
     right: 0;
     
     /* ১. গ্লাস ইফেক্ট ফিরিয়ে আনার মূল লজিক */
-    background: rgba(255, 255, 255, 0.05) !important; /* খুব হালকা সাদা আভা */
-    backdrop-filter: blur(15px) saturate(150%); /* ঝাপসা করার জন্য */
+    background: rgba(244, 227, 241, 0.40) !important; /* খুব হালকা সাদা আভা */
+    backdrop-filter: blur(10px) saturate(150%); /* ঝাপসা করার জন্য */
     -webkit-backdrop-filter: blur(15px) saturate(150%);
     
     /* ২. ওভাল শেপ ও বর্ডার */
@@ -350,7 +350,7 @@ input::-webkit-calendar-picker-indicator {
 }
 
 .suggestions-box::-webkit-scrollbar-thumb {
-    background: rgba(162, 155, 254, 0.5);
+    background: rgba(171, 117, 219, 0.5);
     border-radius: 10px;
 }
 /* আইটেমগুলো যেন দেখতে ভালো লাগে */
@@ -364,5 +364,5 @@ input::-webkit-calendar-picker-indicator {
 }
 
 .suggestion-item:hover {
-    background: rgba(255, 255, 255, 0.1); /* হোভার করলে গ্লাস ভাব বাড়বে */
+    background: rgba(171, 117, 219, 0.65); /* হোভার করলে গ্লাস ভাব বাড়বে */
 }
