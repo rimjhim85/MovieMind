@@ -2,57 +2,54 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login | MovieMind</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
 </head>
-<body class="auth-page dark-mode">
+<body>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div id="flash-data" data-category="{{ category }}" data-message="{{ message }}" style="display:none;"></div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
 
-    <div class="auth-container">
-        <div class="auth-card">
-            <div class="auth-header">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <div class="logo">🎬 <span>MovieMind</span></div>
-                    <button onclick="toggleTheme()" class="theme-btn" type="button" style="background: none; border: 1px solid var(--glass-border); color: var(--text); padding: 5px 10px; border-radius: 8px; cursor: pointer;">🌓</button>
+    <div style="display: flex; justify-content: center; align-items: center; min-height: 100vh;">
+        <div class="glass" style="padding: 40px; width: 350px; text-align: center;">
+            <h2 style="margin-bottom: 20px;">Welcome Back</h2>
+            <form action="/login" method="POST">
+                <div style="margin-bottom: 15px;">
+                    <input type="text" name="username" placeholder="Username" required 
+                           style="width: 100%; padding: 12px; border-radius: 25px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.1); color: white;">
                 </div>
-                <h1>Welcome Back</h1>
-                <p>Login to access your personalized recommendations.</p>
-            </div>
-
-            <form action="/login" method="POST" class="auth-form">
-                <div class="input-group">
-                    <label for="username">Username</label>
-                    <input type="text" name="username" id="username" placeholder="Enter your username" required>
+                <div style="margin-bottom: 20px;">
+                    <input type="password" name="password" placeholder="Password" required 
+                           style="width: 100%; padding: 12px; border-radius: 25px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.1); color: white;">
                 </div>
-                
-                <div class="input-group">
-                    <label for="password">Password</label>
-                    <input type="password" name="password" id="password" placeholder="••••••••" required>
-                </div>
-
-                <div style="text-align: center;"> 
-                    <button type="submit" class="btn-auth full-width">Sign In</button>
-                </div>
+                <button type="submit" class="btn-primary" style="width: 100%; padding: 12px; border-radius: 25px;">Login</button>
+                <p style="margin-top: 10px; font-size: 0.8rem;">
+                  <a href="/forget_password" style="color: rgba(255,255,255,0.6); text-decoration: none;">Forgot Password?</a>
+                </p>
             </form>
-
-            <div class="auth-footer">
-                <p>Don't have an account? <a href="{{ url_for('signup') }}" style="color: var(--primary); text-decoration: none; font-weight: 600;">Create one</a></p>
-            </div>
+            <p style="margin-top: 20px; font-size: 0.9rem;">
+                Don't have an account? <a href="/signup" style="color: var(--primary); text-decoration: none;">Sign Up</a>
+            </p>
         </div>
     </div>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div id="flash-data" data-category="{{ category }}" data-message="{{ message }}" style="display:none;"></div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
 
+<div id="simple-white-popup" style="display: none; position: fixed; top: 20%; left: 50%; transform: translate(-50%, -50%); 
+    background: white; color: #333; padding: 20px 40px; border-radius: 8px; border: 1px solid #ccc;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2); z-index: 10000; font-family: Arial, sans-serif; text-align: center;">
+    <p id="simple-popup-message" style="margin: 0; font-weight: bold;"></p>
+</div>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
-<script>
-    // Check for saved theme preference
-    if (localStorage.getItem('theme') === 'light') {
-        document.body.classList.add('light-mode');
-    }
-
-    function toggleTheme() {
-        document.body.classList.toggle('light-mode');
-        const isLight = document.body.classList.contains('light-mode');
-        localStorage.setItem('theme', isLight ? 'light' : 'dark');
-    }
-</script>

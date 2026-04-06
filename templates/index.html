@@ -1,132 +1,108 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>MovieMind | AI Discovery</title>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MovieMind | AI Discovery</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-
 <body>
-    <nav class="navbar glass">
-        <div style="display: flex; align-items: center; gap: 10px;">
-            <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
-            <div class="logo">🎬 <span>MovieMind</span></div>
-        </div>
-        
+    <nav class="glass">
+        <div class="logo"><i class="fas fa-film"></i> <strong>MovieMind</strong></div>
         <div class="nav-right">
-            <button onclick="toggleTheme()" class="theme-btn">🌓</button>
-            <button onclick="surpriseMe()" class="btn-surprise desktop-only">🎲 Surprise Me</button>
-            <span class="user-pill desktop-only">{{ session['username'] }}</span>
-
-            <div class="nav-actions desktop-only">
-                <form action="/delete_account" method="POST" style="margin: 0;" onsubmit="return confirm('Delete account and history permanently?');">
-                    <button type="submit" class="nav-delete-btn">Delete Account</button>
-                </form>
-                <a href="/logout" class="logout-link">Logout</a>
-            </div>
+            <span class="status-dot">🟢 {{ user_count }} Online</span>
+            <span class="user-name">Hi, {{ session['username'] }}</span>
+            <a href="/profile" class="profile-avatar" title="My Profile">{{ session['username'][0].upper() }}</a>
+            <a href="/logout" class="logout-link" title="Sign Out"><i class="fas fa-sign-out-alt"></i></a>
         </div>
     </nav>
 
-    <div class="main-layout">
-        <aside class="sidebar glass" id="sidebar">
-            <div class="sidebar-content">
-                <div class="filter-box">
-                    <h3>Min Rating</h3>
-                    <input type="range" id="ratingSlider" min="1" max="10" step="0.1" value="7.5" oninput="rVal.innerText=this.value">
-                    <span id="rVal">7.5</span>
-                </div>
-                <div class="history-box">
-                    <h4>History <a href="/clear_history" class="clear-link">Clear</a></h4>
-                    {% for s in recent %}
-                    <button class="tag" onclick="window.location.href='/?auto_search={{s}}'">{{s}}</button>
-                    {% endfor %}
-                </div>
-            </div>
+    <section class="hero">
+        <h1>Discover Your Next <span class="highlight">Favorite Movie</span></h1>
+        <div class="search-container" style="position: relative; z-index: 9999;">
+          <form action="/" method="POST" class="search-box glass" id="searchForm" autocomplete="off">
+            <input type="text" name="movie_name" id="movieSearch" placeholder="Search for a movie..." required>
+            <button type="submit" class="btn-glass">Discover</button>
+            <div id="suggestions-box" class="suggestions-box"></div>
+          </form>
+        </div>
+    </section>
 
-            <div class="mobile-only sidebar-footer">
-                <hr style="border: 0; border-top: 1px solid var(--glass-border); margin: 20px 0;">
-                <button onclick="surpriseMe()" class="btn-surprise" style="width: 100%; margin: 0 0 10px 0;">🎲 Surprise Me</button>
-                <form action="/delete_account" method="POST" onsubmit="return confirm('Delete permanently?');">
-                    <button type="submit" class="nav-delete-btn" style="color: #ef4444;">Delete Account</button>
-                </form>
-                <a href="/logout" class="logout-link" style="display: block; margin-top: 10px;">Logout</a>
+    <div class="container main-layout">
+        <aside class="sidebar glass">
+            <h3><i class="fas fa-history"></i> Recent Searches</h3>
+            <ul id="historyList">
+                {% if history %}
+                    {% for movie in history %}
+                    <li><i class="fas fa-search"></i> {{ movie }}</li>
+                    {% endfor %}
+                {% else %}
+                    <li class="empty-msg">No history yet</li>
+                {% endif %}
+            </ul>
+            <div class="sidebar-footer">
+                <button onclick="clearHistory()" class="btn-text small">Clear History</button>
+                <div class="danger-zone">
+                   <button onclick="deleteAccount()" class="btn-text danger small"><i class="fas fa-user-slash"></i> Delete Account</button>
+                </div>
             </div>
         </aside>
 
         <main class="content">
-            <div class="search-hero">
-                <h1>Find your next <span>favorite</span> movie</h1>
-                <div class="search-container">
-                    <form method="POST" action="/" id="searchForm" class="premium-search-bar">
-                        <input type="text" id="movie_input" name="movie_name" placeholder="Start typing..." autocomplete="off">
-                        <button type="submit" class="btn-primary">Discover</button>
-                    </form>
-                    <div id="autocomplete-results" class="autocomplete-box"></div>
-                </div>
+            {% if not_found %}
+            <div class="error-box glass">
+                <h2><i class="fas fa-exclamation-circle"></i> Movie Not Found!</h2>
+                <p>Try searching for another title.</p>
             </div>
+            {% endif %}
+            
+            <section class="movie-section">
+                <h2>
+                    {% if is_searching %}
+                        <i class="fas fa-magic" style="color: #a29bfe;"></i> You should watch these movies next
+                    {% else %}
+                        <i class="fas fa-fire" style="color: #ff7675;"></i> Trending Now
+                    {% endif %}
+                </h2>
+                <div class="movie-grid">
+                    {% set loop_data = results if is_searching else trending %}
+                    {% for title, poster in loop_data %}
+                    <div class="movie-card glass">
+                        <img src="{{ poster }}" alt="{{ title }}" loading="lazy">
+                        <div class="card-hover">
+                            <button onclick="interact('{{ title }}', 'liked')" title="Like"><i class="fas fa-heart"></i></button>
+                            <button onclick="interact('{{ title }}', 'watchlist')" title="Add to Watchlist"><i class="fas fa-plus"></i></button>
+                        </div>
+                        <p class="movie-title">{{ title }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </section>
 
-            <div class="movie-grid">
-                {% for movie, poster in results %}
-                <div class="movie-card">
-                    <img src="{{poster}}" alt="Poster">
-                    <div class="card-info"><h3>{{movie}}</h3></div>
+            {% if not is_searching %}
+            <section class="movie-section">
+                <h2><i class="fas fa-lightbulb" style="color: #fdcb6e;"></i> Recommended for You</h2>
+                <div class="movie-grid">
+                    {% for title, poster in recommendations %}
+                    <div class="movie-card glass">
+                        <img src="{{ poster }}" alt="{{ title }}" loading="lazy">
+                        <div class="card-hover">
+                            <button onclick="interact('{{ title }}', 'liked')"><i class="fas fa-heart"></i></button>
+                            <button onclick="interact('{{ title }}', 'watchlist')"><i class="fas fa-plus"></i></button>
+                        </div>
+                        <p class="movie-title">{{ title }}</p>
+                    </div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
-            </div>
+            </section>
+            {% endif %}
         </main>
     </div>
 
     <script>
-        // --- Sidebar Toggle ---
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('active');
-        }
-
-        // --- Theme Toggle ---
-        function toggleTheme() {
-            document.body.classList.toggle('light-mode');
-            const theme = document.body.classList.contains('light-mode') ? 'light' : 'dark';
-            localStorage.setItem('theme', theme);
-        }
-
-        // Apply theme on load
-        if (localStorage.getItem('theme') === 'light') document.body.classList.add('light-mode');
-
-        // --- Autocomplete & Search ---
-        const input = document.getElementById('movie_input');
-        const resultsBox = document.getElementById('autocomplete-results');
-
-        input.addEventListener('input', async () => {
-            if (input.value.length < 2) { resultsBox.innerHTML = ''; return; }
-            const res = await fetch(`/autocomplete?q=${input.value}`);
-            const data = await res.json();
-            resultsBox.innerHTML = data.map(t => `<div onclick="selectMovie('${t}')">${t}</div>`).join('');
-        });
-
-        function selectMovie(title) {
-            input.value = title;
-            resultsBox.innerHTML = '';
-            document.getElementById('searchForm').submit();
-        }
-
-        function surpriseMe() {
-            const r = document.getElementById('ratingSlider').value;
-            window.location.href = `/surprise?rating=${r}`;
-        }
-
-        // --- Toast Pop-up ---
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('existing') === 'true') {
-            const alertBox = document.createElement('div');
-            alertBox.className = 'toast-popup';
-            alertBox.innerHTML = `<span>👋</span> Welcome back! Logged into existing account.`;
-            document.body.appendChild(alertBox);
-            window.history.replaceState({}, document.title, "/");
-            setTimeout(() => {
-                alertBox.style.opacity = '0';
-                setTimeout(() => alertBox.remove(), 500);
-            }, 4000);
-        }
+        const allMovies = {{ all_titles | tojson }};
     </script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>

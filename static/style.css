@@ -1,268 +1,368 @@
-/* --- 1. CORE VARIABLES & THEMES --- */
+/* Variables */
 :root {
-    /* Dark Mode (Default) */
-    --primary: #6366f1;
-    --primary-hover: #4f46e5;
-    --bg: #0b0e14;
-    --card: #161b22;
-    --text: #ffffff;
-    --text-muted: #94a3b8;
-    --glass: rgba(255, 255, 255, 0.03);
+    --primary: #a29bfe;
+    --danger: #ff7675;
+    --bg-color: #0f0c29;
+    --glass-bg: rgba(255, 255, 255, 0.08);
     --glass-border: rgba(255, 255, 255, 0.1);
-    --input-bg: #000000;
-    --shadow-3d: #3b3dbf;
 }
 
-body.light-mode {
-    /* Light Mode Overrides */
-    --bg: #f3f4f6;
-    --card: #ffffff;
-    --text: #1f2937;
-    --text-muted: #6b7280;
-    --glass: rgba(0, 0, 0, 0.05);
-    --glass-border: rgba(0, 0, 0, 0.1);
-    --input-bg: #ffffff;
-    --shadow-3d: #d1d5db;
-}
-
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    background-color: var(--bg);
-    color: var(--text);
-    transition: background 0.3s, color 0.3s;
-    line-height: 1.6;
-    overflow-x: hidden;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), 
+                url('https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=1450&auto=format&fit=crop');
+    background-size: cover;
+    background-attachment: fixed;
+    color: white;
+    min-height: 100vh;
 }
 
-/* --- 2. AUTH PAGES (Login & Signup) --- */
-.auth-page {
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: radial-gradient(circle at center, var(--glass-border), var(--bg));
-}
-
-.auth-card {
-    background: var(--card);
-    padding: 40px;
-    border-radius: 24px;
+.glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
     border: 1px solid var(--glass-border);
-    width: 380px;
-    text-align: center;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+    border-radius: 15px;
 }
 
-/* --- 3. NAVIGATION --- */
-.navbar {
+/* Nav */
+nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem 5%;
-    background: var(--glass);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid var(--glass-border);
+    padding: 15px 5%;
     position: sticky;
     top: 0;
     z-index: 1000;
 }
 
-.logo span { color: var(--primary); font-weight: 800; }
-
 .nav-right { display: flex; align-items: center; gap: 15px; }
 
-.user-pill {
-    background: var(--glass);
-    padding: 5px 12px;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    border: 1px solid var(--glass-border);
-}
-
-/* --- 4. LAYOUT & SIDEBAR --- */
-.main-layout { display: flex; }
-
-.sidebar {
-    width: 280px;
-    padding: 30px;
-    border-right: 1px solid var(--glass-border);
-    min-height: 100vh;
-    background: var(--bg);
-    display: flex;
-    flex-direction: column;
-}
-
-.content { flex: 1; padding: 40px; }
-
-/* --- 5. 3D BUTTONS --- */
-.btn-primary, .btn-auth, .btn-surprise {
+.profile-avatar {
+    width: 35px; height: 35px;
     background: var(--primary);
-    color: white !important;
-    border: none;
-    padding: 10px 22px;
-    border-radius: 10px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.1s;
-    box-shadow: 0 4px 0 var(--shadow-3d);
-    text-decoration: none;
-    display: inline-block;
-    font-size: 0.9rem;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: bold; color: #1a1a1a;
 }
 
-.btn-primary:hover, .btn-auth:hover, .btn-surprise:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 5px 0 var(--shadow-3d);
-}
+/* Hero */
+.hero { text-align: center; padding: 60px 20px; }
 
-.btn-primary:active, .btn-auth:active, .btn-surprise:active {
-    transform: translateY(3px);
-    box-shadow: 0 1px 0 var(--shadow-3d);
-}
+.highlight { color: var(--primary); }
 
-/* Navigation Specific Links */
-.nav-delete-btn {
-    background: none;
-    border: none;
-    color: var(--text-muted);
-    font-size: 0.85rem;
-    cursor: pointer;
-    text-decoration: underline;
-    transition: 0.2s;
-}
-
-.nav-delete-btn:hover { color: #ef4444; }
-
-.logout-link {
-    color: var(--primary);
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 0.85rem;
-}
-
-/* --- 6. SEARCH & AUTOCOMPLETE --- */
-.search-hero { text-align: center; margin-bottom: 50px; }
-.search-hero h1 span { color: var(--primary); }
-
-.premium-search-bar {
+.search-box {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 8px;
     display: flex;
-    background: var(--card);
-    border: 1px solid var(--glass-border);
-    border-radius: 16px;
-    padding: 6px;
-    gap: 10px;
 }
 
-.premium-search-bar input {
+.search-box input {
+    flex: 1;
     background: transparent;
     border: none;
-    color: var(--text);
-    flex: 1;
-    padding: 12px;
+    padding: 12px 20px;
+    color: white;
     outline: none;
 }
 
-.autocomplete-box {
-    position: absolute;
-    width: 100%;
-    background: var(--card);
-    border: 1px solid var(--glass-border);
-    border-radius: 12px;
-    margin-top: 5px;
-    z-index: 100;
-}
-
-.autocomplete-box div {
-    padding: 12px;
+.btn-primary {
+    background: #a29bfe; /* Light purple */
+    border: none;
+    color: #1a1a1a;
+    font-weight: bold;
     cursor: pointer;
-}
-
-.autocomplete-box div:hover { background: var(--primary); color: white; }
-
-/* --- 7. MOVIE GRID --- */
-.movie-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 25px;
-}
-
-.movie-card {
-    background: var(--card);
-    border-radius: 18px;
-    overflow: hidden;
-    border: 1px solid var(--glass-border);
     transition: 0.3s;
 }
 
-.movie-card:hover { transform: translateY(-5px); border-color: var(--primary); }
-.movie-card img { width: 100%; height: 300px; object-fit: cover; }
-.card-info { padding: 15px; text-align: center; }
+.btn-primary:hover {
+    background: #81ecec; /* Change color on hover */
+    transform: scale(1.02);
+}
 
-/* --- 8. MOBILE RESPONSIVE --- */
-.menu-toggle {
-    display: none;
-    background: none;
-    border: none;
-    color: var(--text);
-    font-size: 1.5rem;
+.glass {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+}
+
+/* Layout */
+.container {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 30px;
+    padding: 0 5% 50px;
+}
+
+/* Sidebar */
+.sidebar { padding: 20px; height: fit-content; }
+
+.sidebar h3 { font-size: 1.1rem; margin-bottom: 15px; border-bottom: 1px solid var(--glass-border); padding-bottom: 10px; }
+
+#history-list { list-style: none; margin-bottom: 15px; }
+
+#history-list li {
+    font-size: 0.9rem;
+    padding: 8px 0;
+    opacity: 0.8;
+}
+
+.btn-text {
+    background: none; border: none; color: #ccc; cursor: pointer; font-size: 0.85rem;
+}
+
+.btn-text.danger:hover { color: var(--danger); }
+
+/* Movie Grid */
+.movie-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 20px;
+}
+
+.movie-card {
+    position: relative;
+    padding: 10px;
+    transition: 0.3s;
+}
+
+.movie-card img {
+    width: 100%;
+    height: 230px;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+.movie-title {
+    font-size: 0.85rem;
+    margin-top: 10px;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.card-hover {
+    position: absolute;
+    top: 10px; left: 10px; right: 10px; bottom: 40px;
+    background: rgba(0,0,0,0.6);
+    display: flex; align-items: center; justify-content: center;
+    gap: 15px;
+    opacity: 0;
+    transition: 0.3s;
+    border-radius: 10px;
+}
+
+.movie-card:hover .card-hover { opacity: 1; }
+
+.card-hover button {
+    background: white; border: none; border-radius: 50%;
+    width: 40px; height: 40px; cursor: pointer; color: #333;
+}
+/* Profile Page Layout */
+.profile-layout {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 30px;
+    margin-top: 40px;
+    align-items: start;
+}
+
+/* Sidebar Card */
+.profile-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(15px);
+    border-radius: 20px;
+    padding: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+.profile-avatar-large {
+    width: 90px;
+    height: 90px;
+    background: linear-gradient(45deg, #6a11cb, #2575fc);
+    border-radius: 50%;
+    margin: 0 auto 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.2rem;
+    font-weight: bold;
+    color: white;
+    box-shadow: 0 4px 15px rgba(106, 17, 203, 0.4);
+}
+
+.edit-toggle-btn {
+    background: rgba(106, 17, 203, 0.15);
+    color: #a29bfe;
+    border: 1px solid rgba(106, 17, 203, 0.5);
+    padding: 12px;
+    border-radius: 10px;
     cursor: pointer;
-}
-
-.mobile-only { display: none; }
-
-@media (max-width: 768px) {
-    .menu-toggle { display: block; }
-    .desktop-only { display: none; }
-    .mobile-only { display: block; }
-
-    .main-layout { display: block; }
-
-    .sidebar {
-        position: fixed;
-        left: -100%;
-        top: 0;
-        height: 100vh;
-        z-index: 2000;
-        background: var(--card);
-        width: 280px;
-        transition: 0.3s ease;
-        box-shadow: 10px 0 30px rgba(0,0,0,0.5);
-    }
-
-    .sidebar.active { left: 0; }
-
-    .content { padding: 20px; }
-
-    .movie-grid {
-        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-        gap: 15px;
-    }
-}
-
-/* --- 9. TOAST NOTIFICATION --- */
-.toast-popup {
-    position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: var(--card);
-    padding: 15px 25px;
-    border-radius: 12px;
-    border: 1px solid var(--primary);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    z-index: 9999;
+    margin-top: 20px;
+    width: 100%;
     font-weight: 600;
-    animation: slideDown 0.5s ease forwards;
-    transition: opacity 0.5s;
+    transition: 0.3s ease;
 }
 
-@keyframes slideDown {
-    from { top: -100px; opacity: 0; }
-    to { top: 20px; opacity: 1; }
+.edit-toggle-btn:hover {
+    background: #6a11cb;
+    color: white;
+    transform: translateY(-2px);
+}
+
+/* Hidden Form Styling */
+.hidden-form {
+    display: none;
+    margin-top: 25px;
+    text-align: left;
+    animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.glass-input-group {
+    margin-bottom: 15px;
+}
+
+.glass-input-group label {
+    display: block;
+    font-size: 0.85rem;
+    margin-bottom: 5px;
+    opacity: 0.8;
+}
+
+.glass-input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    outline: none;
+}
+
+.glass-input:focus {
+    border-color: #6a11cb;
+}
+
+/* Profile Section Titles */
+.profile-main h2 {
+    font-size: 1.5rem;
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+/* ১. ইনপুট ফিল্ড থেকে ক্যালেন্ডার/অ্যারো আইকন রিমুভ করা */
+input::-webkit-calendar-picker-indicator {
+    display: none !important;
+    -webkit-appearance: none;
+}
+
+/* ২. ডিসকভার গ্লাস বাটন স্টাইল */
+.btn-glass {
+    background: rgba(255, 255, 255, 0.15); /* হালকা সাদা স্বচ্ছ লেয়ার */
+    backdrop-filter: blur(10px); /* ঝাপসা এফেক্ট */
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: capitalize;
+}
+
+.btn-glass:hover {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.btn-glass:active {
+    transform: translateY(0);
+}
+
+/* ৩. ইনপুট বক্সের ভেতরে টেক্সট সাদা রাখা */
+.search-box input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: white;
+    width: 100%;
+}
+/* ১. ডিফল্ট অ্যারো আইকন এবং সাদা লিস্ট রিমুভ করা */
+input::-webkit-calendar-picker-indicator {
+    display: none !important;
+}
+
+/* ২. সার্চ বক্স কন্টেইনার পজিশনিং */
+/* ১. সাজেস্টশন বক্সের প্যারেন্ট কন্টেইনারকে সামনে রাখা */
+.search-container {
+    position: relative;
+    z-index: 999999 !important; /* এটি মুভি সেকশনের চেয়ে বেশি হতে হবে */
+}
+
+.suggestions-box {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    
+    /* ১. গ্লাস ইফেক্ট ফিরিয়ে আনার মূল লজিক */
+    background: rgba(255, 255, 255, 0.05) !important; /* খুব হালকা সাদা আভা */
+    backdrop-filter: blur(15px) saturate(150%); /* ঝাপসা করার জন্য */
+    -webkit-backdrop-filter: blur(15px) saturate(150%);
+    
+    /* ২. ওভাল শেপ ও বর্ডার */
+    border-radius: 15px !important; 
+    border: 1px solid rgba(255, 255, 255, 0.15); /* হালকা সাদা বর্ডার */
+    
+    margin-top: 8px;
+    max-height: 300px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    
+    /* ৩. লেয়ারিং ঠিক রাখা */
+    z-index: 1000000 !important; 
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+    display: none;
+}
+/* ৫. কাস্টম স্ক্রলবার: যেন এটি ওভাল শেপকে নষ্ট না করে */
+.suggestions-box::-webkit-scrollbar {
+    width: 6px;
+}
+
+.suggestions-box::-webkit-scrollbar-track {
+    background: transparent;
+    margin: 10px; /* উপরে নিচে গ্যাপ রাখা যেন কোনাগুলো গোল দেখায় */
+}
+
+.suggestions-box::-webkit-scrollbar-thumb {
+    background: rgba(162, 155, 254, 0.5);
+    border-radius: 10px;
+}
+/* আইটেমগুলো যেন দেখতে ভালো লাগে */
+.suggestion-item {
+    padding: 12px 20px;
+    color: rgba(255, 255, 255, 0.9);
+    background: transparent;
+    cursor: pointer;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    transition: 0.3s;
+}
+
+.suggestion-item:hover {
+    background: rgba(255, 255, 255, 0.1); /* হোভার করলে গ্লাস ভাব বাড়বে */
 }
