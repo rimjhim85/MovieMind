@@ -81,11 +81,11 @@ def home():
         trending = [(m, fetch_poster(m)) for m in top_movies]
         
         recommendations = [(r['Title'], fetch_poster(r['Title'])) for _, r in df.sample(5).iterrows()]
-        u_count = conn.execute("SELECT COUNT(*) FROM users").fetchone()[0]
+        u_count = c.execute("SELECT COUNT(*) FROM users").fetchone()[0]
 
     return render_template("index.html", results=results, trending=trending, history=history, 
                            user_count=u_count, recommendations=recommendations, 
-                           not_found=not_found, is_searching=bool(query), all_titles=ALL_TITLES)
+                           not_found=not_found, is_searching=bool(query), all_titles=ALL_TITLES,is_admin=session.get('is_admin', False))
 
 @app.route('/profile', methods=['GET', 'POST'])
 def profile():
@@ -133,7 +133,14 @@ def login():
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
+        #admin password check
+        admin_pass = os.getenv('ADMIN_PASSWORD')
         
+        if username == 'admin' and password == admin_pass:
+            session['user_id'] = 0
+            session['username'] = 'admin'
+            session['is_admin'] = True # অ্যাডমিন হিসেবে চিহ্নিত করা
+            return redirect(url_for('home'))
         with sqlite3.connect('database.db') as conn:
             c = conn.cursor()
             # SQL কোয়েরি দিয়ে ইউজার চেক করা হচ্ছে
@@ -217,5 +224,36 @@ def forget_password():
                 return redirect(url_for('forget_password'))
                 
     return render_template('forget_password.html')
+@app.route('/admin/dashboard')
+def admin_dashboard():
+    # চেক করা হচ্ছে লগইন করা ইউজারের ইউজারনেম 'admin' কি না
+    if 'username' not in session or not session.get('is_admin'): 
+        # যদি অন্য কেউ হয়, তবে তাকে হোম পেজে পাঠিয়ে দেওয়া হবে
+        flash("You do not have permission to access the Admin Panel.", "error")
+        return redirect(url_for('home'))
+
+    with sqlite3.connect('database.db') as conn:
+        conn.row_factory = sqlite3.Row
+        c = conn.cursor()
+        
+        # সব ইউজারের তথ্য আনা হচ্ছে
+        c.execute("""
+            SELECT u.id, u.username, u.password, 
+            (SELECT COUNT(*) FROM searches WHERE user_id = u.id) as search_count,
+            (SELECT COUNT(*) FROM interactions WHERE user_id = u.id AND liked = 1) as like_count,
+            (SELECT COUNT(*) FROM interactions WHERE user_id = u.id AND watchlist = 1) as watchlist_count
+            FROM users u
+        """)
+        users_list = c.fetchall()
+        
+        c.execute("""
+            SELECT u.username, s.movie_name, s.timestamp 
+            FROM searches s 
+            JOIN users u ON s.user_id = u.id 
+            ORDER BY s.timestamp DESC LIMIT 100
+        """)
+        global_searches = c.fetchall()
+
+    return render_template('admin.html', users=users_list, searches=global_searches)
 if __name__ == "__main__":
     app.run(debug=True)

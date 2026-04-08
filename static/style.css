@@ -366,3 +366,67 @@ input::-webkit-calendar-picker-indicator {
 .suggestion-item:hover {
     background: rgba(171, 117, 219, 0.65); /* হোভার করলে গ্লাস ভাব বাড়বে */
 }
+/* Admin Button Style */
+.btn-admin {
+    background: #ffcc00;
+    color: black;
+    padding: 4px 12px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 12px;
+    margin: 0 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: 0.3s;
+}
+
+.btn-admin:hover {
+    background: #e6b800;
+    box-shadow: 0 4px 15px rgba(255, 204, 0, 0.4);
+}
+
+/* Navigation layout adjustment */
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+/* Profile Page Custom Styles */
+.remove-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(255, 71, 87, 0.8);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    transition: 0.3s;
+    z-index: 5;
+    opacity: 0;
+}
+
+.movie-card:hover .remove-btn {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.remove-btn:hover {
+    background: #ff4757;
+}
+
+.movie-card {
+    position: relative;
+}
+
+.hidden-form {
+    display: none;
+}

@@ -141,3 +141,31 @@ function removeFromList(movieTitle, actionType) {
         .catch(error => console.error('Error:', error));
     }
 }
+// Toggle Edit Profile Form
+function toggleEdit() {
+    const form = document.getElementById('editForm');
+    if (form) {
+        form.style.display = (form.style.display === 'block') ? 'none' : 'block';
+    }
+}
+
+// Remove Movie from Watchlist/Liked List
+function removeFromList(movieTitle, actionType) {
+    if (confirm(`Remove "${movieTitle}" from your ${actionType} list?`)) {
+        fetch('/interact', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                movie: movieTitle, 
+                action: actionType 
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                location.reload();
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+}

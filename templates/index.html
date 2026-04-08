@@ -12,12 +12,16 @@
         <div class="logo"><i class="fas fa-film"></i> <strong>MovieMind</strong></div>
         <div class="nav-right">
             <span class="status-dot">🟢 {{ user_count }} Online</span>
+            {% if session.get('is_admin') %}
+                <a href="/admin/dashboard" class="btn-admin">
+                    <i class="fas fa-user-shield"></i> Admin Panel
+                </a>
+            {% endif %}
             <span class="user-name">Hi, {{ session['username'] }}</span>
             <a href="/profile" class="profile-avatar" title="My Profile">{{ session['username'][0].upper() }}</a>
             <a href="/logout" class="logout-link" title="Sign Out"><i class="fas fa-sign-out-alt"></i></a>
         </div>
     </nav>
-
     <section class="hero">
         <h1>Discover Your Next <span class="highlight">Favorite Movie</span></h1>
         <div class="search-container" style="position: relative; z-index: 9999;">

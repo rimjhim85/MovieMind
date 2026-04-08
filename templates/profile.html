@@ -6,41 +6,6 @@
     <title>Profile | MovieMind</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        /* ডিলিট বাটনের জন্য ছোট কিছু স্টাইল */
-        .remove-btn {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            background: rgba(255, 71, 87, 0.8);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 28px;
-            height: 28px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            transition: 0.3s;
-            z-index: 5;
-            opacity: 0; /* মাউস না নিলে দেখা যাবে না */
-        }
-
-        .movie-card:hover .remove-btn {
-            opacity: 1; /* মাউস নিলে ভেসে উঠবে */
-            transform: scale(1.1);
-        }
-
-        .remove-btn:hover {
-            background: #ff4757;
-        }
-        
-        .movie-card {
-            position: relative; /* বাটন পজিশন করার জন্য জরুরি */
-        }
-    </style>
 </head>
 <body class="profile-page">
     <nav class="glass">
@@ -62,7 +27,7 @@
                 <i class="fas fa-user-edit"></i> Edit Profile
             </button>
 
-            <div id="editForm" class="hidden-form" style="display: none;">
+            <div id="editForm" class="hidden-form">
                 <form method="POST">
                     <div class="glass-input-group">
                         <label>New Username</label>
@@ -115,33 +80,6 @@
         </main>
     </div>
 
-    <script>
-        function toggleEdit() {
-            const form = document.getElementById('editForm');
-            form.style.display = (form.style.display === 'block') ? 'none' : 'block';
-        }
-
-        // রিমুভ করার ফাংশন (যদি script.js এ না থাকে তবে এখানে থাকল)
-        function removeFromList(movieTitle, actionType) {
-            if (confirm(`Remove "${movieTitle}" from your ${actionType} list?`)) {
-                fetch('/interact', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        movie: movieTitle, 
-                        action: actionType 
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        location.reload(); // পেজ রিফ্রেশ করে লিস্ট আপডেট করবে
-                    }
-                })
-                .catch(error => console.error('Error:', error));
-            }
-        }
-    </script>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
