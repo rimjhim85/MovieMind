@@ -6,12 +6,34 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div style="position: absolute; top: 20px; width: 100%; display: flex; justify-content: center; z-index: 1000;">
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }}" 
+             style="background: rgba(255, 118, 117, 0.2); 
+                    color: #ff7675; 
+                    padding: 10px 20px; 
+                    border-radius: 10px; 
+                    border: 1px solid #ff7675; 
+                    font-weight: bold;
+                    backdrop-filter: blur(5px);">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
     <div style="display: flex; justify-content: center; align-items: center; min-height: 100vh;">
         <div class="glass" style="padding: 40px; width: 350px; text-align: center;">
             <h2 style="margin-bottom: 20px;">Create Account</h2>
             <form action="/signup" method="POST">
                 <div style="margin-bottom: 15px;">
                     <input type="text" name="username" placeholder="Choose Username" required 
+                           style="width: 100%; padding: 12px; border-radius: 25px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.1); color: white;">
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <input type="email" name="email" placeholder="Your Email" required
                            style="width: 100%; padding: 12px; border-radius: 25px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.1); color: white;">
                 </div>
                 <div style="margin-bottom: 20px;">

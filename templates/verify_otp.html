@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Verify OTP | MovieMind</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: url('https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .glass-box {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 40px;
+            width: 350px;
+            text-align: center;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            color: white;
+        }
+        /* এই ক্লাসগুলো তোমার ইনপুট ফিল্ডে মিসিং ছিল */
+        .input-field {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            outline: none;
+            box-sizing: border-box;
+        }
+        .input-field::placeholder { color: rgba(255, 255, 255, 0.6); }
+        .submit-btn {
+            width: 100%;
+            padding: 12px;
+            border-radius: 25px;
+            border: none;
+            background: #a29bfe;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 15px;
+        }
+        .submit-btn:hover { background: #6c5ce7; }
+    </style>
+</head>
+<body>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div style="position: absolute; width: 100%; text-align: center; top: 20px; z-index: 1000;">
+          {% for category, message in messages %}
+            <div style="color: #ffffff; background: rgba(214, 48, 49, 0.8); display: inline-block; padding: 10px 20px; border-radius: 10px; font-weight: bold; margin-bottom: 5px;">
+              {{ message }}
+            </div>
+          {% endfor %} 
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <div class="glass-box">
+        <h2 style="margin-bottom: 10px;">Verify OTP</h2>
+        <p style="font-size: 0.85rem; color: rgba(255,255,255,0.7); margin-bottom: 25px;">
+            Check your email for the code.
+        </p>
+
+        <form action="{{ url_for('verify_and_update') }}" method="POST">
+            <input type="text" name="otp" class="input-field" placeholder="6-digit OTP" required>
+            <input type="password" name="password" class="input-field" placeholder="Set New Password" required>
+            <button type="submit" class="submit-btn">Update Password</button>
+        </form>
+
+        <p style="margin-top: 20px; font-size: 0.85rem;">
+            Back to <a href="{{ url_for('login') }}" style="color: #a29bfe; text-decoration: none;">Login</a>
+        </p>
+    </div>
+
+</body>
+</html>

@@ -8,48 +8,41 @@
 <body>
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
-        {% for category, message in messages %}
-          <div id="flash-data" data-category="{{ category }}" data-message="{{ message }}" style="display:none;"></div>
-        {% endfor %}
+        <div style="position: absolute; width: 100%; text-align: center; top: 20px; z-index: 1000;">
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }}" style="color: #ff7675; margin-bottom: 10px; font-weight: bold; background: rgba(0,0,0,0.3); display: inline-block; padding: 10px 20px; border-radius: 10px; backdrop-filter: blur(5px);">
+              {{ message }}
+            </div>
+          {% endfor %} 
+        </div>
       {% endif %}
     {% endwith %}
 
     <div style="display: flex; justify-content: center; align-items: center; min-height: 100vh;">
         <div class="glass" style="padding: 40px; width: 350px; text-align: center;">
             <h2 style="margin-bottom: 20px;">Welcome Back</h2>
+            
             <form action="/login" method="POST">
                 <div style="margin-bottom: 15px;">
                     <input type="text" name="username" placeholder="Username" required 
                            style="width: 100%; padding: 12px; border-radius: 25px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.1); color: white;">
                 </div>
+
                 <div style="margin-bottom: 20px;">
                     <input type="password" name="password" placeholder="Password" required 
                            style="width: 100%; padding: 12px; border-radius: 25px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.1); color: white;">
                 </div>
-                <button type="submit" class="btn-primary" style="width: 100%; padding: 12px; border-radius: 25px;">Login</button>
-                <p style="margin-top: 10px; font-size: 0.8rem;">
-                  <a href="/forget_password" style="color: rgba(255,255,255,0.6); text-decoration: none;">Forgot Password?</a>
-                </p>
+
+                <button type="submit" class="btn-primary" style="width: 100%; padding: 12px; border-radius: 25px; cursor: pointer;">
+                    Login
+                </button>
             </form>
-            <p style="margin-top: 20px; font-size: 0.9rem;">
-                Don't have an account? <a href="/signup" style="color: var(--primary); text-decoration: none;">Sign Up</a>
+
+            <p style="margin-top: 20px; font-size: 0.8rem;">
+                <a href="/forget_password" style="color: #a29bfe; text-decoration: none;">Forgot Password?</a><br><br>
+                Don't have an account? <a href="/signup" style="color: #a29bfe; text-decoration: none;">Sign Up</a>
             </p>
         </div>
     </div>
-    {% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-    {% for category, message in messages %}
-      <div id="flash-data" data-category="{{ category }}" data-message="{{ message }}" style="display:none;"></div>
-    {% endfor %}
-  {% endif %}
-{% endwith %}
-
-<div id="simple-white-popup" style="display: none; position: fixed; top: 20%; left: 50%; transform: translate(-50%, -50%); 
-    background: white; color: #333; padding: 20px 40px; border-radius: 8px; border: 1px solid #ccc;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2); z-index: 10000; font-family: Arial, sans-serif; text-align: center;">
-    <p id="simple-popup-message" style="margin: 0; font-weight: bold;"></p>
-</div>
-
-<script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
