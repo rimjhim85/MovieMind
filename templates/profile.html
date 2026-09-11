@@ -1,85 +1,460 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Profile | MovieMind</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
+
 <body class="profile-page">
-    <nav class="glass">
-        <a href="/" class="btn-text"><i class="fas fa-chevron-left"></i> Back to Dashboard</a>
-        <div class="nav-right">
-            <a href="/logout" class="logout-link" title="Sign Out">
-                <i class="fas fa-sign-out-alt"></i>
-            </a>
-        </div>
-    </nav>
 
-    <div class="container profile-layout">
-        <aside class="profile-card">
-            <div class="profile-avatar-large">{{ session['username'][0].upper() }}</div>
-            <h2>{{ session['username'] }}</h2>
-            <p class="user-tag">Movie Enthusiast</p>
-            
-            <button class="edit-toggle-btn" onclick="toggleEdit()">
-                <i class="fas fa-user-edit"></i> Edit Profile
-            </button>
+<nav class="profile-nav">
 
-            <div id="editForm" class="hidden-form">
-                <form method="POST">
-                    <div class="glass-input-group">
-                        <label>New Username</label>
-                        <input type="text" name="username" value="{{ session['username'] }}" class="glass-input" required>
-                    </div>
-                    <div class="glass-input-group">
-                        <label>New Password</label>
-                        <input type="password" name="password" placeholder="••••••••" class="glass-input" required>
-                    </div>
-                    <button type="submit" class="btn-primary" style="width: 100%;">Save Changes</button>
-                </form>
-            </div>
+    <a href="/" class="profile-back">
+        <i class="fas fa-arrow-left"></i>
+        <span>Dashboard</span>
+    </a>
 
-            <hr class="divider">
-            <button onclick="deleteAccount()" class="btn-text danger">
-                <i class="fas fa-user-slash"></i> Delete Account
-            </button>
-        </aside>
+    <div class="profile-nav-right">
 
-        <main class="profile-main">
-            <section class="movie-section">
-                <h2><i class="fas fa-bookmark" style="color: #6a11cb;"></i> My Watchlist</h2>
-                <div class="movie-grid">
-                    {% for title, poster in watchlist %}
-                    <div class="movie-card glass">
-                        <button class="remove-btn" onclick="removeFromList('{{ title }}', 'watchlist')" title="Remove from Watchlist">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                        <img src="{{ poster }}" alt="{{ title }}" loading="lazy">
-                        <p class="movie-title">{{ title }}</p>
-                    </div>
-                    {% endfor %}
-                </div>
-            </section>
+        <span class="profile-nav-name">
+            Hi, {{ session['username'] }}
+        </span>
 
-            <section class="movie-section">
-                <h2><i class="fas fa-heart" style="color: #ff4757;"></i> Liked Movies</h2>
-                <div class="movie-grid">
-                    {% for title, poster in liked %}
-                    <div class="movie-card glass">
-                        <button class="remove-btn" onclick="removeFromList('{{ title }}', 'liked')" title="Unlike Movie">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                        <img src="{{ poster }}" alt="{{ title }}" loading="lazy">
-                        <p class="movie-title">{{ title }}</p>
-                    </div>
-                    {% endfor %}
-                </div>
-            </section>
-        </main>
+        <a href="/logout"
+           class="profile-logout"
+           title="Sign Out">
+
+            <i class="fas fa-sign-out-alt"></i>
+
+        </a>
+
     </div>
 
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</nav>
+
+
+<main class="profile-container">
+
+    <!-- PROFILE HEADER -->
+
+    <section class="profile-hero glass">
+
+        <div class="profile-identity">
+
+            <div class="profile-avatar-large">
+                {{ session['username'][0].upper() }}
+            </div>
+
+            <div>
+
+                <span class="profile-eyebrow">
+                    MOVIEMIND PROFILE
+                </span>
+
+                <h1>{{ session['username'] }}</h1>
+
+                <p>
+                    Your personal movie space.
+                    Keep track of what you love and what you want to watch.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <button type="button"
+                class="profile-edit-main"
+                id="editProfileButton">
+
+            <i class="fas fa-pen"></i>
+            Edit Profile
+
+        </button>
+
+    </section>
+
+
+    <!-- STATS -->
+
+    <section class="profile-stats">
+
+        <div class="profile-stat glass">
+
+            <div class="stat-icon watchlist-icon">
+                <i class="fas fa-bookmark"></i>
+            </div>
+
+            <div>
+                <span class="stat-number">
+                    {{ watchlist|length }}
+                </span>
+
+                <span class="stat-label">
+                    Watchlist
+                </span>
+            </div>
+
+        </div>
+
+
+        <div class="profile-stat glass">
+
+            <div class="stat-icon liked-icon">
+                <i class="fas fa-heart"></i>
+            </div>
+
+            <div>
+                <span class="stat-number">
+                    {{ liked|length }}
+                </span>
+
+                <span class="stat-label">
+                    Liked Movies
+                </span>
+            </div>
+
+        </div>
+
+
+        <div class="profile-stat glass">
+
+            <div class="stat-icon movie-icon">
+                <i class="fas fa-film"></i>
+            </div>
+
+            <div>
+                <span class="stat-number">
+                    {{ watchlist|length + liked|length }}
+                </span>
+
+                <span class="stat-label">
+                    Saved
+                </span>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- EDIT PROFILE -->
+
+    <section id="editForm"
+             class="profile-edit-panel glass hidden-form">
+
+        <div class="edit-panel-header">
+
+            <div>
+                <span class="profile-eyebrow">
+                    ACCOUNT SETTINGS
+                </span>
+
+                <h2>Edit your profile</h2>
+            </div>
+
+            <button type="button"
+                    class="edit-close"
+                    onclick="toggleEdit()">
+
+                <i class="fas fa-times"></i>
+
+            </button>
+
+        </div>
+
+
+        <form method="POST"
+              class="profile-edit-form">
+
+            <div class="profile-field">
+
+                <label>
+                    Username
+                </label>
+
+                <div class="field-wrapper">
+
+                    <i class="fas fa-user"></i>
+
+                    <input
+                        type="text"
+                        name="username"
+                        value="{{ session['username'] }}"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+            <div class="profile-field">
+
+                <label>
+                    New Password
+                </label>
+
+                <div class="field-wrapper">
+
+                    <i class="fas fa-lock"></i>
+
+                    <input
+                        type="password"
+                        name="password"
+                        placeholder="Enter new password"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+            <button type="submit"
+                    class="profile-save-btn">
+
+                <i class="fas fa-check"></i>
+                Save Changes
+
+            </button>
+
+        </form>
+
+    </section>
+
+
+    <!-- WATCHLIST -->
+
+    <section class="profile-movie-section">
+
+        <div class="profile-section-header">
+
+            <div>
+
+                <span class="profile-eyebrow">
+                    SAVED FOR LATER
+                </span>
+
+                <h2>
+                    <i class="fas fa-bookmark"></i>
+                    My Watchlist
+                </h2>
+
+            </div>
+
+            <span class="section-pill">
+                {{ watchlist|length }}
+            </span>
+
+        </div>
+
+
+        {% if watchlist %}
+
+        <div class="profile-movie-grid">
+
+            {% for title, poster in watchlist %}
+
+            <article class="profile-movie-card">
+
+                <div class="profile-poster">
+
+                    <img
+                        src="{{ poster }}"
+                        alt="{{ title }}"
+                        loading="lazy"
+                    >
+
+                    <div class="profile-poster-overlay">
+
+                        <button
+                            class="profile-remove-btn"
+                            onclick="removeFromList('{{ title|e }}', 'watchlist')"
+                            title="Remove from Watchlist"
+                        >
+
+                            <i class="fas fa-trash"></i>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <div class="profile-movie-title">
+                    {{ title }}
+                </div>
+
+            </article>
+
+            {% endfor %}
+
+        </div>
+
+        {% else %}
+
+        <div class="profile-empty glass">
+
+            <div class="empty-icon">
+                <i class="fas fa-bookmark"></i>
+            </div>
+
+            <h3>Your watchlist is empty</h3>
+
+            <p>
+                Save movies you want to watch later and they'll appear here.
+            </p>
+
+            <a href="/" class="profile-empty-btn">
+                <i class="fas fa-search"></i>
+                Discover Movies
+            </a>
+
+        </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- LIKED -->
+
+    <section class="profile-movie-section">
+
+        <div class="profile-section-header">
+
+            <div>
+
+                <span class="profile-eyebrow">
+                    YOUR FAVORITES
+                </span>
+
+                <h2>
+                    <i class="fas fa-heart"></i>
+                    Liked Movies
+                </h2>
+
+            </div>
+
+            <span class="section-pill">
+                {{ liked|length }}
+            </span>
+
+        </div>
+
+
+        {% if liked %}
+
+        <div class="profile-movie-grid">
+
+            {% for title, poster in liked %}
+
+            <article class="profile-movie-card">
+
+                <div class="profile-poster">
+
+                    <img
+                        src="{{ poster }}"
+                        alt="{{ title }}"
+                        loading="lazy"
+                    >
+
+                    <div class="profile-poster-overlay">
+
+                        <button
+                            class="profile-remove-btn"
+                            onclick="removeFromList('{{ title|e }}', 'liked')"
+                            title="Remove from liked movies"
+                        >
+
+                            <i class="fas fa-heart-crack"></i>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <div class="profile-movie-title">
+                    {{ title }}
+                </div>
+
+            </article>
+
+            {% endfor %}
+
+        </div>
+
+        {% else %}
+
+        <div class="profile-empty glass">
+
+            <div class="empty-icon">
+                <i class="fas fa-heart"></i>
+            </div>
+
+            <h3>No liked movies yet</h3>
+
+            <p>
+                Like movies you love and build your personal collection.
+            </p>
+
+            <a href="/" class="profile-empty-btn">
+                <i class="fas fa-film"></i>
+                Find Something You Love
+            </a>
+
+        </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- DANGER ZONE -->
+
+    <section class="profile-danger glass">
+
+        <div>
+
+            <span class="profile-eyebrow">
+                ACCOUNT
+            </span>
+
+            <h3>Delete account</h3>
+
+            <p>
+                Permanently remove your MovieMind account and saved data.
+            </p>
+
+        </div>
+
+        <button
+            onclick="deleteAccount()"
+            class="delete-account-btn"
+        >
+
+            <i class="fas fa-user-slash"></i>
+            Delete Account
+
+        </button>
+
+    </section>
+
+</main>
+
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+
 </body>
 </html>

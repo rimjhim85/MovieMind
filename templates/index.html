@@ -3,110 +3,700 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MovieMind | AI Discovery</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <title>MovieMind | AI Movie Discovery</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
+
 <body>
-    <nav class="glass">
-        <div class="logo"><i class="fas fa-film"></i> <strong>MovieMind</strong></div>
-        <div class="nav-right">
-            <span class="status-dot">🟢 {{ user_count }} Online</span>
-            {% if session.get('is_admin') %}
-                <a href="/admin/dashboard" class="btn-admin">
-                    <i class="fas fa-user-shield"></i> Admin Panel
-                </a>
-            {% endif %}
-            <span class="user-name">Hi, {{ session['username'] }}</span>
-            <a href="/profile" class="profile-avatar" title="My Profile">{{ session['username'][0].upper() }}</a>
-            <a href="/logout" class="logout-link" title="Sign Out"><i class="fas fa-sign-out-alt"></i></a>
-        </div>
-    </nav>
-    <section class="hero">
-        <h1>Discover Your Next <span class="highlight">Favorite Movie</span></h1>
-        <div class="search-container" style="position: relative; z-index: 9999;">
-          <form action="/" method="POST" class="search-box glass" id="searchForm" autocomplete="off">
-            <input type="text" name="movie_name" id="movieSearch" placeholder="Search for a movie..." required>
-            <button type="submit" class="btn-glass">Discover</button>
-            <div id="suggestions-box" class="suggestions-box"></div>
-          </form>
-        </div>
-    </section>
 
-    <div class="container main-layout">
-        <aside class="sidebar glass">
-            <h3><i class="fas fa-history"></i> Recent Searches</h3>
-            <ul id="historyList">
-                {% if history %}
-                    {% for movie in history %}
-                    <li><i class="fas fa-search"></i> {{ movie }}</li>
-                    {% endfor %}
-                {% else %}
-                    <li class="empty-msg">No history yet</li>
-                {% endif %}
-            </ul>
-            <div class="sidebar-footer">
-                <button onclick="clearHistory()" class="btn-text small">Clear History</button>
-                <div class="danger-zone">
-                   <button onclick="deleteAccount()" class="btn-text danger small"><i class="fas fa-user-slash"></i> Delete Account</button>
-                </div>
-            </div>
-        </aside>
+<!-- ================= NAVBAR ================= -->
 
-        <main class="content">
-            {% if not_found %}
-            <div class="error-box glass">
-                <h2><i class="fas fa-exclamation-circle"></i> Movie Not Found!</h2>
-                <p>Try searching for another title.</p>
-            </div>
-            {% endif %}
-            
-            <section class="movie-section">
-                <h2>
-                    {% if is_searching %}
-                        <i class="fas fa-magic" style="color: #a29bfe;"></i> You should watch these movies next
-                    {% else %}
-                        <i class="fas fa-fire" style="color: #ff7675;"></i> Trending Now
-                    {% endif %}
-                </h2>
-                <div class="movie-grid">
-                    {% set loop_data = results if is_searching else trending %}
-                    {% for title, poster in loop_data %}
-                    <div class="movie-card glass">
-                        <img src="{{ poster }}" alt="{{ title }}" loading="lazy">
-                        <div class="card-hover">
-                            <button onclick="interact('{{ title }}', 'liked')" title="Like"><i class="fas fa-heart"></i></button>
-                            <button onclick="interact('{{ title }}', 'watchlist')" title="Add to Watchlist"><i class="fas fa-plus"></i></button>
-                        </div>
-                        <p class="movie-title">{{ title }}</p>
-                    </div>
-                    {% endfor %}
-                </div>
-            </section>
+<nav class="site-nav">
 
-            {% if not is_searching %}
-            <section class="movie-section">
-                <h2><i class="fas fa-lightbulb" style="color: #fdcb6e;"></i> Recommended for You</h2>
-                <div class="movie-grid">
-                    {% for title, poster in recommendations %}
-                    <div class="movie-card glass">
-                        <img src="{{ poster }}" alt="{{ title }}" loading="lazy">
-                        <div class="card-hover">
-                            <button onclick="interact('{{ title }}', 'liked')"><i class="fas fa-heart"></i></button>
-                            <button onclick="interact('{{ title }}', 'watchlist')"><i class="fas fa-plus"></i></button>
-                        </div>
-                        <p class="movie-title">{{ title }}</p>
-                    </div>
-                    {% endfor %}
-                </div>
-            </section>
-            {% endif %}
-        </main>
+    <a href="/" class="logo">
+        <i class="fas fa-film"></i>
+        <strong>MovieMind</strong>
+    </a>
+
+    <div class="nav-right">
+
+        <span class="status-dot">
+            <span></span>
+            {{ user_count }} Online
+        </span>
+
+        {% if session.get('is_admin') %}
+        <a href="/admin/dashboard" class="btn-admin">
+            <i class="fas fa-user-shield"></i>
+            Admin
+        </a>
+        {% endif %}
+
+        <span class="user-name">
+            Hi, {{ session['username'] }}
+        </span>
+
+        <a href="/profile"
+           class="profile-avatar"
+           title="My Profile">
+
+            {{ session['username'][0].upper() }}
+
+        </a>
+
+        <a href="/logout"
+           class="logout-link"
+           title="Sign Out">
+
+            <i class="fas fa-sign-out-alt"></i>
+
+        </a>
+
     </div>
 
-    <script>
-        const allMovies = {{ all_titles | tojson }};
-    </script>
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</nav>
+
+
+<!-- ================= HERO ================= -->
+
+<section class="hero">
+
+    <div class="hero-eyebrow">
+        <span></span>
+        PERSONAL MOVIE DISCOVERY
+    </div>
+
+    <h1>
+        Find a movie you'll
+        <br>
+        <span class="highlight">
+            actually want to watch.
+        </span>
+    </h1>
+
+    <p class="hero-subtitle">
+        Search a movie. Discover what to watch next.
+    </p>
+
+
+    <!-- SEARCH -->
+
+    <div class="search-container">
+
+        <form action="/"
+              method="POST"
+              class="search-box"
+              id="searchForm"
+              autocomplete="off">
+
+            <i class="fas fa-search search-icon"></i>
+
+            <input
+                type="text"
+                name="movie_name"
+                id="movieSearch"
+                placeholder="Search for a movie..."
+                required
+            >
+
+            <button type="submit"
+                    class="search-button">
+
+                Discover
+
+                <i class="fas fa-arrow-right"></i>
+
+            </button>
+
+            <div id="suggestions-box"
+                 class="suggestions-box">
+            </div>
+
+        </form>
+
+    </div>
+
+
+    <!-- RECENT SEARCHES -->
+
+    {% if history %}
+
+    <div class="recent-chips">
+
+        <span>
+            Recent
+        </span>
+
+        {% for movie in history %}
+
+        <button
+            type="button"
+            onclick="searchRecent('{{ movie|e }}')">
+
+            {{ movie }}
+
+        </button>
+
+        {% endfor %}
+
+    </div>
+
+    {% endif %}
+
+</section>
+
+
+<!-- ================= MAIN CONTENT ================= -->
+
+<main class="content-wrap">
+
+
+    <!-- ERROR -->
+
+    {% if not_found %}
+
+    <div class="error-box">
+
+        <div class="error-icon">
+            <i class="fas fa-search"></i>
+        </div>
+
+        <div>
+
+            <h2>
+                Movie not found
+            </h2>
+
+            <p>
+                Try another title or choose one from the suggestions.
+            </p>
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+
+
+    <!-- ================= MAIN MOVIE SECTION ================= -->
+
+    <section class="movie-section">
+
+        <div class="section-heading">
+
+            <div>
+
+                <span class="section-kicker">
+
+                    {% if is_searching %}
+                        BASED ON YOUR SEARCH
+                    {% else %}
+                        WHAT PEOPLE ARE EXPLORING
+                    {% endif %}
+
+                </span>
+
+                <h2>
+
+                    {% if is_searching %}
+
+                        You should watch these next
+
+                    {% else %}
+
+                        Trending on MovieMind
+
+                    {% endif %}
+
+                </h2>
+
+            </div>
+
+            <span class="section-count">
+
+                {{ (results if is_searching else trending)|length }}
+                movies
+
+            </span>
+
+        </div>
+
+
+        <div class="movie-grid">
+
+            {% set loop_data =
+                results if is_searching else trending
+            %}
+
+
+            {% for title, poster in loop_data %}
+
+            <article
+                class="movie-card"
+                data-movie="{{ title|e }}"
+                tabindex="0"
+                role="button"
+                aria-label="View {{ title }}"
+            >
+
+                <!-- POSTER -->
+
+                <div class="poster-wrap">
+
+                    <img
+                        src="{{ poster }}"
+                        alt="{{ title }}"
+                        loading="lazy"
+                    >
+
+                    <div class="poster-shade"></div>
+
+
+                    <!-- LIKE -->
+
+                    <button
+                        class="card-like"
+                        onclick="event.stopPropagation(); interact('{{ title|e }}', 'liked')"
+                        title="Like {{ title }}"
+                        aria-label="Like movie"
+                    >
+
+                        <i class="far fa-heart"></i>
+
+                    </button>
+
+
+                    <!-- TRAILER -->
+
+                    <button
+                        class="quick-trailer"
+                        onclick="event.stopPropagation(); openTrailer('{{ title|e }}')"
+                    >
+
+                        <i class="fas fa-play"></i>
+
+                        Trailer
+
+                    </button>
+
+                </div>
+
+
+                <!-- MOVIE INFORMATION -->
+
+                <div class="movie-info">
+
+                    <h3>
+                        {{ title }}
+                    </h3>
+
+                    <div class="movie-meta">
+
+                        <span>
+                            <i class="fas fa-circle-info"></i>
+                            Details
+                        </span>
+
+                        <button
+                            class="watchlist-link"
+                            onclick="event.stopPropagation(); interact('{{ title|e }}', 'watchlist')"
+                        >
+
+                            <i class="fas fa-plus"></i>
+
+                            List
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </article>
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ================= RECOMMENDATIONS ================= -->
+
+    {% if not is_searching %}
+
+    <section class="movie-section recommendation-section">
+
+        <div class="section-heading">
+
+            <div>
+
+                <span class="section-kicker">
+                    PERSONALIZED DISCOVERY
+                </span>
+
+                <h2>
+
+                    <span class="spark">
+                        ✦
+                    </span>
+
+                    Recommended for you
+
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <div class="movie-grid">
+
+            {% for title, poster in recommendations %}
+
+            <article
+                class="movie-card"
+                data-movie="{{ title|e }}"
+                tabindex="0"
+                role="button"
+                aria-label="View {{ title }}"
+            >
+
+                <div class="poster-wrap">
+
+                    <img
+                        src="{{ poster }}"
+                        alt="{{ title }}"
+                        loading="lazy"
+                    >
+
+                    <div class="poster-shade"></div>
+
+
+                    <button
+                        class="card-like"
+                        onclick="event.stopPropagation(); interact('{{ title|e }}', 'liked')"
+                    >
+
+                        <i class="far fa-heart"></i>
+
+                    </button>
+
+
+                    <button
+                        class="quick-trailer"
+                        onclick="event.stopPropagation(); openTrailer('{{ title|e }}')"
+                    >
+
+                        <i class="fas fa-play"></i>
+
+                        Trailer
+
+                    </button>
+
+                </div>
+
+
+                <div class="movie-info">
+
+                    <h3>
+                        {{ title }}
+                    </h3>
+
+                    <div class="movie-meta">
+
+                        <span>
+                            <i class="fas fa-circle-info"></i>
+                            Details
+                        </span>
+
+                        <button
+                            class="watchlist-link"
+                            onclick="event.stopPropagation(); interact('{{ title|e }}', 'watchlist')"
+                        >
+
+                            <i class="fas fa-plus"></i>
+                            List
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </article>
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+    {% endif %}
+
+</main>
+
+
+
+<!-- ================================================= -->
+<!-- MOVIE DETAILS MODAL -->
+<!-- ================================================= -->
+
+<div
+    id="movieModal"
+    class="modal-backdrop"
+    aria-hidden="true"
+>
+
+    <div
+        class="movie-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modalTitle"
+    >
+
+        <!-- CLOSE -->
+
+        <button
+            class="modal-close"
+            onclick="closeMovieModal()"
+            aria-label="Close"
+        >
+
+            <i class="fas fa-times"></i>
+
+        </button>
+
+
+        <!-- BACKDROP -->
+
+        <div
+            class="modal-backdrop-image"
+            id="modalBackdrop"
+        ></div>
+
+
+        <div class="modal-body">
+
+
+            <!-- POSTER -->
+
+            <div class="modal-poster-wrap">
+
+                <img
+                    id="modalPoster"
+                    src=""
+                    alt=""
+                >
+
+            </div>
+
+
+            <!-- DETAILS -->
+
+            <div class="modal-details">
+
+                <span class="modal-kicker">
+                    MOVIE DETAILS
+                </span>
+
+                <h2 id="modalTitle">
+                    Loading...
+                </h2>
+
+
+                <div
+                    class="modal-meta"
+                    id="modalMeta"
+                >
+                </div>
+
+
+                <div
+                    class="genre-list"
+                    id="modalGenres"
+                >
+                </div>
+
+
+                <p
+                    class="modal-overview"
+                    id="modalOverview"
+                >
+                    Fetching movie information...
+                </p>
+
+
+                <!-- ACTIONS -->
+
+                <div class="modal-actions">
+
+                    <button
+                        class="primary-action"
+                        id="modalTrailerButton"
+                    >
+
+                        <i class="fas fa-play"></i>
+
+                        Watch Trailer
+
+                    </button>
+
+
+                    <button
+                        class="secondary-action"
+                        id="modalLikeButton"
+                    >
+
+                        <i class="far fa-heart"></i>
+
+                        Like
+
+                    </button>
+
+
+                    <button
+                        class="secondary-action"
+                        id="modalWatchlistButton"
+                    >
+
+                        <i class="fas fa-plus"></i>
+
+                        Watchlist
+
+                    </button>
+
+                </div>
+
+
+
+                <!-- WHERE TO WATCH -->
+
+                <div class="providers-block">
+
+                    <div class="provider-heading">
+
+                        <div>
+
+                            <span class="section-kicker">
+                                INDIA
+                            </span>
+
+                            <h3>
+                                Where to watch
+                            </h3>
+
+                        </div>
+
+                        <span class="provider-note">
+                            Availability can change
+                        </span>
+
+                    </div>
+
+
+                    <div
+                        id="providersContent"
+                        class="providers-content"
+                    >
+
+                        <div class="provider-loading">
+
+                            <span class="spinner"></span>
+
+                            Checking availability...
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- ================================================= -->
+<!-- TRAILER MODAL -->
+<!-- ================================================= -->
+
+<div
+    id="trailerModal"
+    class="modal-backdrop trailer-backdrop"
+    aria-hidden="true"
+>
+
+    <div
+        class="trailer-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Movie trailer"
+    >
+
+        <button
+            class="modal-close"
+            onclick="closeTrailer()"
+            aria-label="Close"
+        >
+
+            <i class="fas fa-times"></i>
+
+        </button>
+
+
+        <div
+            class="video-frame"
+            id="videoFrame"
+        >
+        </div>
+
+
+        <div
+            class="trailer-title"
+            id="trailerTitle"
+        >
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- TOAST -->
+
+<div
+    id="toast-container"
+    class="toast-container"
+></div>
+
+
+
+<script>
+
+    const allMovies =
+        {{ all_titles | tojson }};
+
+</script>
+
+
+<script
+    src="{{ url_for('static', filename='script.js') }}">
+</script>
+
 </body>
 </html>
